@@ -1,0 +1,9 @@
+# Resolved type:
+# - resolv.conf: Use standard '/etc/resolv.conf' file
+# - systemd-resolved: Use 'systemd-resovled' service
+system_dns_resolver: "resolv.conf"
+
+# DNS servers, options and search domains
+system_dns_servers: [ "172.29.245.1" ]
+system_dns_options: [ "edns0" ]
+system_dns_search:  [ "dt.ept.lu" ]

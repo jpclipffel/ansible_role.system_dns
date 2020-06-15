@@ -1,0 +1,52 @@
+- block:
+    - name: Stop and disable systemd-resolved
+      service:
+        name: systemd-resolved
+        state: stopped
+        enabled: no
+    - name: Remove existing resolv.conf
+      file:
+        path: /etc/resolv.conf
+        state: absent
+    - name: Template resolv.conf
+      template:
+        src: resolv.conf.j2
+        dest: /etc/resolv.conf
+    - name: Removing unmanaged systemd-resolved resolv.conf
+      file:
+        path: /run/systemd/resolve/resolv.conf
+        state: absent
+    - name: Creating fake systemd-resolved run directory
+      file:
+        path: /run/systemd/resolve
+        state: directory
+    - name: Link systemd-resolved/resolv.conf -> etc/resolv.conf
+      file:
+        path: /run/systemd/resolve/resolv.conf
+        src: /etc/resolv.conf
+        state: link
+  when:
+    - system_dns_resolver == "resolv.conf"
+  tags:
+    - setup
+
+
+- block:
+    - name: Start and enabled systemd-resolved
+      service:
+        name: systemd-resolved
+        state: started
+        enabled: yes
+    - name: Remove existing resolv.conf
+      file:
+        path: /etc/resolv.conf
+        state: absent
+    - name: Link etc/resolv.conf -> systemd-resolved/resolv.conf
+      file:
+        path: /etc/resolv.conf
+        src: /run/systemd/resolve/resolv.conf
+        state: link
+  when:
+    - system_dns_resolver == "systemd-resolved"
+  tags:
+    - setup
