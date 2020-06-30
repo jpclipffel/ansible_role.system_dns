@@ -28,6 +28,7 @@
   when:
     - system_dns_resolver == "resolv.conf"
   tags:
+    - never
     - setup
 
 
@@ -49,4 +50,5 @@
   when:
     - system_dns_resolver == "systemd-resolved"
   tags:
+    - never
     - setup
